@@ -23,15 +23,30 @@ const Hero = () => {
     setLoadedVideos((prev) => prev + 1);
   };
 
+  // Tambah error handler
+  const handleVideoError = () => {
+    console.log("Video failed to load, but continuing...");
+    setLoadedVideos((prev) => prev + 1);
+  };
+
   useEffect(() => {
-    if (loadedVideos === totalVideos - 1) {
+    // Timeout fallback - maksimal loading 3 detik
+    const timeout = setTimeout(() => {
+      console.log("Loading timeout reached, forcing hide loading screen");
       setLoading(false);
+    }, 3000);
+
+    // Loading hilang setelah minimal 2 video load
+    if (loadedVideos >= totalVideos - 1) {
+      setLoading(false);
+      clearTimeout(timeout);
     }
-  }, [loadedVideos]);
+
+    return () => clearTimeout(timeout);
+  }, [loadedVideos, totalVideos]);
 
   const handleMiniVdClick = () => {
     setHasClicked(true);
-
     setCurrentIndex((prevIndex) => (prevIndex % totalVideos) + 1);
   };
 
@@ -46,7 +61,7 @@ const Hero = () => {
           height: "100%",
           duration: 1,
           ease: "power1.inOut",
-          onStart: () => nextVdRef.current.play(),
+          onStart: () => nextVdRef.current?.play(),
         });
         gsap.from("#current-video", {
           transformOrigin: "center center",
@@ -80,13 +95,15 @@ const Hero = () => {
     });
   });
 
-  const getVideoSrc = (index) => `videos/SINEMATIK-${index}.mp4`;
+  const getVideoSrc = (index) => {
+    const basePath = import.meta.env.BASE_URL || '/';
+    return `${basePath}videos/SINEMATIK-${index}.mp4`;
+  };
 
   return (
     <div className="relative h-dvh w-screen overflow-x-hidden">
       {loading && (
         <div className="flex-center absolute z-[100] h-dvh w-screen overflow-hidden bg-violet-50">
-          {/* https://uiverse.io/G4b413l/tidy-walrus-92 */}
           <div className="three-body">
             <div className="three-body__dot"></div>
             <div className="three-body__dot"></div>
@@ -107,13 +124,14 @@ const Hero = () => {
                 className="origin-center scale-50 opacity-0 transition-all duration-500 ease-in hover:scale-100 hover:opacity-100"
               >
                 <video
-                  ref={nextVdRef}
+                  // HAPUS ref={nextVdRef} dari sini!
                   src={getVideoSrc((currentIndex % totalVideos) + 1)}
                   loop
                   muted
                   id="current-video"
                   className="size-64 origin-center scale-150 object-cover object-center"
                   onLoadedData={handleVideoLoad}
+                  onError={handleVideoError}
                 />
               </div>
             </VideoPreview>
@@ -127,7 +145,9 @@ const Hero = () => {
             id="next-video"
             className="absolute-center invisible absolute z-20 size-64 object-cover object-center"
             onLoadedData={handleVideoLoad}
+            onError={handleVideoError}
           />
+          
           <video
             src={getVideoSrc(
               currentIndex === totalVideos - 1 ? 1 : currentIndex
@@ -137,6 +157,7 @@ const Hero = () => {
             muted
             className="absolute left-0 top-0 size-full object-cover object-center"
             onLoadedData={handleVideoLoad}
+            onError={handleVideoError}
           />
         </div>
 
@@ -151,9 +172,8 @@ const Hero = () => {
             </h1>
 
             <h4 className="mb-5 max-w-64 text-lg font-robert-regular text-white">
-              {/* deskripsi LPK */}
-                Dari Indonesia ke Jepang <br /> 
-                Raih Kesempatan Emas
+              Dari Indonesia ke Jepang <br /> 
+              Raih Kesempatan Emas
             </h4>
 
             <Button

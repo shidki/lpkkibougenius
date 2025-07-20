@@ -150,7 +150,7 @@ const Galeri = () => (
     <div className="container mx-auto px-3 md:px-10">
       <BentoTilt className="border-hsla relative mb-7 h-96 w-full overflow-hidden rounded-md md:h-[65vh]">
         <BentoCard
-          src="img/galeri-1.jpeg"
+          src="/lpkkibougenius/img/galeri-1.jpeg"
           title={
             <>
               {/* radia<b>n</b>t */}
@@ -164,7 +164,7 @@ const Galeri = () => (
       <div className="grid h-[135vh] w-full grid-cols-2 grid-rows-3 gap-7">
         <BentoTilt className="bento-tilt_1 row-span-1 md:col-span-1 md:row-span-2">
           <BentoCard
-            src="img/galeri-2.jpeg"
+            src="/lpkkibougenius/img/galeri-2.jpeg"
             title={
               <>
                 {/* zig<b>m</b>a */}
@@ -177,7 +177,7 @@ const Galeri = () => (
 
         <BentoTilt className="bento-tilt_1 row-span-1 ms-32 md:col-span-1 md:ms-0">
           <BentoCard
-            src="img/galeri-3.jpeg"
+            src="/lpkkibougenius/img/galeri-3.jpeg"
             title={
               <>
                 {/* n<b>e</b>xus */}
